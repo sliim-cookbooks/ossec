@@ -23,16 +23,28 @@ search_string = "role:#{node['ossec']['server_role']}"
 search_string << " AND chef_environment:#{node['ossec']['server_env']}" if node['ossec']['server_env']
 
 if node.run_list.roles.include?(node['ossec']['server_role'])
-  ossec_server << node['ipaddress']
+  if node['ossec']['use_public_addr']
+    ossec_server << node['cloud']['public_ipv4']
+  else
+    ossec_server << node['ipaddress']
+  end
 else
   search(:node, search_string) do |n|
-    ossec_server << n['ipaddress']
+    if node['ossec']['use_public_addr']
+      ossec_server << n['cloud']['public_ipv4']
+    else
+      ossec_server << n['ipaddress']
+    end
   end
 end
 
 node.normal['ossec']['agent_server_ip'] = ossec_server.first
 
 include_recipe 'ossec::install_agent'
+
+user 'ossec' do
+  shell '/bin/sh'
+end
 
 dbag_name = node['ossec']['data_bag']['name']
 dbag_item = node['ossec']['data_bag']['ssh']
