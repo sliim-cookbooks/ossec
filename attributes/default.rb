@@ -22,6 +22,7 @@ default['ossec']['dir']             = '/var/ossec'
 default['ossec']['server_role']     = 'ossec_server'
 default['ossec']['server_env']      = nil
 default['ossec']['agent_server_ip'] = nil
+default['ossec']['use_public_addr'] = false
 
 # data bag configuration
 default['ossec']['data_bag']['encrypted']  = false
@@ -31,7 +32,7 @@ default['ossec']['data_bag']['ssh']        = 'ssh'
 # ossec-batch-manager.pl location varies
 default['ossec']['agent_manager'] = value_for_platform_family(
   %w( rhel fedora suse amazon ) => '/usr/share/ossec/contrib/ossec-batch-manager.pl',
-  'default' => "#{node['ossec']['dir']}/contrib/ossec-batch-manager.pl"
+  'default' => "#{node['ossec']['dir']}/bin/manage_agents"
 )
 
 # The following attributes are mapped to XML for ossec.conf using

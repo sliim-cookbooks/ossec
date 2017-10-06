@@ -21,6 +21,10 @@ ruby_block 'ossec install_type' do # ~FC014
   block do
     if node['recipes'].include?('ossec::default')
       type = 'local'
+    elsif node['recipes'].include?('ossec::server')
+      type = 'server'
+    elsif node['recipes'].include?('ossec::client') || node['recipes'].include?('ossec::agent')
+      type = 'agent'
     else
       type = nil
 
@@ -82,23 +86,24 @@ file "#{node['ossec']['dir']}/etc/shared/agent.conf" do
   }
 end
 
+sname = node['recipes'].include?('ossec::server') ? 'wazuh-manager' : 'wazuh-agent'
 # Both the RPM and DEB packages enable and start the service
 # immediately after installation, which isn't helpful. An empty
 # client.keys file will cause a server not to listen and an agent to
 # abort immediately. Explicitly stopping the service here after
 # installation allows Chef to start it when client.keys has content.
 service 'stop ossec' do # ~FC037
-  service_name platform_family?('debian') ? 'ossec' : 'ossec-hids'
+  service_name sname
   action :nothing
 
   %w( disable stop ).each do |action|
-    subscribes action, 'package[ossec]', :immediately
+    subscribes action, "package[#{sname}]", :immediately
   end
 end
 
 service 'ossec' do
-  service_name platform_family?('debian') ? 'ossec' : 'ossec-hids'
-  supports status: true, restart: true
+  service_name sname
+  supports status: true, restart: true, enable: true
   action [:enable, :start]
 
   not_if do

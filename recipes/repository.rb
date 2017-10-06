@@ -21,7 +21,7 @@ case node['platform_family']
 when %w(centos redhat scientific oracle fedora amazon)
   include_recipe 'yum-atomic'
 when 'debian'
-  package 'lsb-release'
+  package ['lsb-release', 'apt-transport-https']
 
   ohai 'reload lsb' do
     plugin 'lsb'
@@ -29,9 +29,9 @@ when 'debian'
     subscribes :reload, 'package[lsb-release]', :immediately
   end
 
-  apt_repository 'ossec' do
-    uri 'http://ossec.wazuh.com/repos/apt/' + node['platform']
-    key 'http://ossec.wazuh.com/repos/apt/conf/ossec-key.gpg.key'
+  apt_repository 'wazuh' do
+    uri 'https://packages.wazuh.com/apt'
+    key 'https://packages.wazuh.com/key/GPG-KEY-WAZUH'
     components ['main']
     if node['platform_version'].include? 'Kali'
       distribution 'stretch'
