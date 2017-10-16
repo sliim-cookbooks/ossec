@@ -60,3 +60,7 @@ default['ossec']['conf']['agent']['client']['server-ip'] = node['ossec']['agent_
 # way. We leave this blank by default because Chef is better at
 # distributing agent configuration than OSSEC is.
 default['ossec']['agent_conf'] = []
+
+# Local rules to deploy in etc/rules/local_rules.xml config file.
+# Only for server configuration, will be ignored if empty.
+default['ossec']['local_rules'] = {}

@@ -62,6 +62,16 @@ template "#{node['ossec']['dir']}/.ssh/id_rsa" do
   variables(key: ossec_key['privkey'])
 end
 
+file "#{node['ossec']['dir']}/etc/rules/local_rules.xml" do
+  action :create
+  owner 'root'
+  owner 'ossec'
+  mode '0440'
+  notifies :restart, 'service[ossec]', :delayed
+  content Chef::OSSEC::Helpers.ossec_to_xml(node['ossec']['local_rules'].to_hash)
+  only_if { node['ossec']['local_rules'] }
+end
+
 include_recipe 'ossec::common'
 
 cron 'distribute-ossec-keys' do
