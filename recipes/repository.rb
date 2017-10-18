@@ -32,7 +32,11 @@ when 'debian'
   apt_repository 'ossec' do
     uri 'http://ossec.wazuh.com/repos/apt/' + node['platform']
     key 'http://ossec.wazuh.com/repos/apt/conf/ossec-key.gpg.key'
-    distribution lazy { node['lsb']['codename'] }
     components ['main']
+    if node['platform_version'].include? 'Kali'
+      distribution 'stretch'
+    else
+      distribution lazy { node['lsb']['codename'] }
+    end
   end
 end
