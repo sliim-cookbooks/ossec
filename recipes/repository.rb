@@ -32,7 +32,11 @@ when 'debian'
   apt_repository 'wazuh' do
     uri 'https://packages.wazuh.com/apt'
     key 'https://packages.wazuh.com/key/GPG-KEY-WAZUH'
-    distribution lazy { node['lsb']['codename'] }
     components ['main']
+    if node['platform_version'].include? 'Kali'
+      distribution 'stretch'
+    else
+      distribution lazy { node['lsb']['codename'] }
+    end
   end
 end
