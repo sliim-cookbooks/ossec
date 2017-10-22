@@ -34,7 +34,7 @@ when 'debian'
     key 'https://packages.wazuh.com/key/GPG-KEY-WAZUH'
     components ['main']
     if node['platform_version'].include? 'Kali'
-      distribution 'stretch'
+      distribution 'jessie'
     else
       distribution lazy { node['lsb']['codename'] }
     end
