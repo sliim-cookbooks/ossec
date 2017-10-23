@@ -64,3 +64,7 @@ default['ossec']['agent_conf'] = []
 # Local rules to deploy in etc/rules/local_rules.xml config file.
 # Only for server configuration, will be ignored if empty.
 default['ossec']['local_rules'] = {}
+
+# Local decoders to deploy in etc/decoders/local_decoder.xml config file.
+# Only for server configuration, will be ignored if empty.
+default['ossec']['local_decoders'] = {}
