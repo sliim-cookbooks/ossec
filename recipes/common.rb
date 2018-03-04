@@ -59,6 +59,29 @@ file "#{node['ossec']['dir']}/etc/ossec.conf" do
   }
 end
 
+rules_dir = if node['ossec']['install_type'] == 'local'
+              "#{node['ossec']['dir']}/rules"
+            else
+              "#{node['ossec']['dir']}/etc/rules"
+            end
+
+directory rules_dir do
+  action :create
+  owner 'root'
+  owner 'ossec'
+  mode '0550'
+end
+
+file "#{rules_dir}/local_rules.xml" do
+  action :create
+  owner 'root'
+  owner 'ossec'
+  mode '0440'
+  notifies :restart, 'service[ossec]', :delayed
+  content Chef::OSSEC::Helpers.ossec_to_xml(node['ossec']['local_rules'].to_hash)
+  only_if { node['ossec']['local_rules'] }
+end
+
 file "#{node['ossec']['dir']}/etc/shared/agent.conf" do
   owner 'root'
   group 'ossec'
