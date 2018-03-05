@@ -17,6 +17,9 @@
 # limitations under the License.
 #
 
+# Repository to use (ossec|wazuh)
+default['ossec']['repo'] = 'ossec'
+
 # general settings
 default['ossec']['dir']             = '/var/ossec'
 default['ossec']['server_role']     = 'ossec_server'
@@ -31,7 +34,7 @@ default['ossec']['data_bag']['ssh']        = 'ssh'
 # ossec-batch-manager.pl location varies
 default['ossec']['agent_manager'] = value_for_platform_family(
   %w( rhel fedora suse amazon ) => '/usr/share/ossec/contrib/ossec-batch-manager.pl',
-  'default' => "#{node['ossec']['dir']}/contrib/ossec-batch-manager.pl"
+  'default' => "#{node['ossec']['dir']}/#{node['ossec']['repo'] == 'wazuh' ? 'bin/manage_agents' : 'contrib/ossec-batch-manager.pl'}"
 )
 
 # The following attributes are mapped to XML for ossec.conf using
