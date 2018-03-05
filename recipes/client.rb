@@ -23,11 +23,17 @@ search_string = "role:#{node['ossec']['server_role']}"
 search_string << " AND chef_environment:#{node['ossec']['server_env']}" if node['ossec']['server_env']
 
 if node.run_list.roles.include?(node['ossec']['server_role'])
-  ossec_server << node['ipaddress']
+  node_server = node
 else
   search(:node, search_string) do |n|
-    ossec_server << n['ipaddress']
+    node_server = n
   end
+end
+
+if node['ossec']['use_public_addr']
+  ossec_server << node_server['cloud']['public_ipv4']
+else
+  ossec_server << node_server['ipaddress']
 end
 
 node.normal['ossec']['agent_server_ip'] = ossec_server.first
