@@ -19,8 +19,12 @@
 
 ruby_block 'ossec install_type' do # ~FC014
   block do
-    if node['recipes'].include?('ossec::default')
+    if node.recipe?('ossec::default')
       type = 'local'
+    elsif node.recipe?('ossec::server')
+      type = 'server'
+    elsif node.recipe?('ossec::client') || node.recipe?('ossec::agent')
+      type = 'agent'
     else
       type = nil
 
