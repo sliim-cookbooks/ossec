@@ -77,5 +77,5 @@ file "#{node['ossec']['dir']}/etc/decoders/local_decoder.xml" do
   mode '0440'
   notifies :restart, 'service[ossec]', :delayed
   content Chef::OSSEC::Helpers.ossec_to_xml(node['ossec']['local_decoders'].to_hash)
-  only_if { node['ossec']['local_decoders'] }
+  not_if { node['ossec']['local_decoders'].empty? }
 end
