@@ -29,19 +29,10 @@ when 'debian'
     subscribes :reload, 'package[lsb-release]', :immediately
   end
 
-  if node['ossec']['repo'] == 'wazuh'
-    apt_repository 'wazuh' do
-      uri 'https://packages.wazuh.com/apt'
-      key 'https://packages.wazuh.com/key/GPG-KEY-WAZUH'
-      distribution lazy { node['lsb']['codename'] }
-      components ['main']
-    end
-  else
-    apt_repository 'ossec' do
-      uri 'https://ossec.wazuh.com/repos/apt/' + node['platform']
-      key 'https://ossec.wazuh.com/repos/apt/conf/ossec-key.gpg.key'
-      distribution lazy { node['lsb']['codename'] }
-      components ['main']
-    end
+  apt_repository node['ossec']['repo'] do
+    uri 'https://packages.wazuh.com/3.x/apt'
+    key 'https://packages.wazuh.com/key/GPG-KEY-WAZUH'
+    distribution 'stable'
+    components ['main']
   end
 end

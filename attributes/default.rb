@@ -57,7 +57,13 @@ default['ossec']['conf']['all']['rootcheck']['rootkit_trojans'] = "#{node['ossec
 end
 
 default['ossec']['conf']['server']['remote']['connection'] = 'secure'
-default['ossec']['conf']['agent']['client']['server-ip'] = node['ossec']['agent_server_ip']
+
+if node['ossec']['repo'] == 'wazuh'
+  default['ossec']['conf']['agent']['client']['server']['address'] = node['ossec']['agent_server_ip']
+else
+  default['ossec']['conf']['agent']['client']['server-ip'] = node['ossec']['agent_server_ip']
+end
+
 
 # agent.conf is also populated with Gyoku but in a slightly different
 # way. We leave this blank by default because Chef is better at
