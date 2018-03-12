@@ -17,6 +17,9 @@
 # limitations under the License.
 #
 
+# Repository to use (ossec|wazuh)
+default['ossec']['repo'] = 'ossec'
+
 # general settings
 default['ossec']['dir']             = '/var/ossec'
 default['ossec']['server_role']     = 'ossec_server'
@@ -32,7 +35,7 @@ default['ossec']['data_bag']['ssh']        = 'ssh'
 # ossec-batch-manager.pl location varies
 default['ossec']['agent_manager'] = value_for_platform_family(
   %w( rhel fedora suse amazon ) => '/usr/share/ossec/contrib/ossec-batch-manager.pl',
-  'default' => "#{node['ossec']['dir']}/contrib/ossec-batch-manager.pl"
+  'default' => "#{node['ossec']['dir']}/#{node['ossec']['repo'] == 'wazuh' ? 'bin/manage_agents' : 'contrib/ossec-batch-manager.pl'}"
 )
 
 # The following attributes are mapped to XML for ossec.conf using
@@ -55,7 +58,13 @@ default['ossec']['conf']['all']['rootcheck']['rootkit_trojans'] = "#{node['ossec
 end
 
 default['ossec']['conf']['server']['remote']['connection'] = 'secure'
-default['ossec']['conf']['agent']['client']['server-ip'] = node['ossec']['agent_server_ip']
+
+if node['ossec']['repo'] == 'wazuh'
+  default['ossec']['conf']['agent']['client']['server']['address'] = node['ossec']['agent_server_ip']
+else
+  default['ossec']['conf']['agent']['client']['server-ip'] = node['ossec']['agent_server_ip']
+end
+
 
 # agent.conf is also populated with Gyoku but in a slightly different
 # way. We leave this blank by default because Chef is better at

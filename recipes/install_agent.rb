@@ -20,5 +20,5 @@
 include_recipe 'ossec::repository'
 
 package 'ossec' do
-  package_name 'ossec-hids-agent'
+  package_name node['ossec']['repo'] == 'wazuh' ? 'wazuh-agent' : 'ossec-hids-agent'
 end

@@ -30,7 +30,7 @@ filter_keys = { 'fqdn' => ['fqdn'], 'ipaddress' => ['ipaddress'] }
 search(:node, search_string, filter_result: filter_keys).each do |n|
   ssh_hosts << n['ipaddress'] if n['keys']
 
-  execute "#{node['ossec']['agent_manager']} -a --ip #{n['ipaddress']} -n #{n['fqdn'][0..31]}" do
+  execute "#{node['ossec']['agent_manager']} -a #{node['ossec']['repo'] == 'wazuh' ? '' : '--ip'} #{n['ipaddress']} -n #{n['fqdn'][0..31]}" do
     not_if "grep '#{n['fqdn'][0..31]} #{n['ipaddress']}' #{node['ossec']['dir']}/etc/client.keys"
   end
 end

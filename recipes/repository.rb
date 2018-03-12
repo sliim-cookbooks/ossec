@@ -21,7 +21,7 @@ case node['platform_family']
 when 'fedora', 'rhel'
   include_recipe 'yum-atomic'
 when 'debian'
-  package 'lsb-release'
+  package ['lsb-release', 'apt-transport-https']
 
   ohai 'reload lsb' do
     plugin 'lsb'
@@ -29,10 +29,10 @@ when 'debian'
     subscribes :reload, 'package[lsb-release]', :immediately
   end
 
-  apt_repository 'ossec' do
-    uri 'http://updates.atomicorp.com/channels/atomic/' + node['platform']
-    key 'https://www.atomicorp.com/RPM-GPG-KEY.atomicorp.txt'
-    distribution lazy { node['lsb']['codename'] }
+  apt_repository node['ossec']['repo'] do
+    uri 'https://packages.wazuh.com/3.x/apt'
+    key 'https://packages.wazuh.com/key/GPG-KEY-WAZUH'
+    distribution 'stable'
     components ['main']
   end
 end

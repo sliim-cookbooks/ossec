@@ -1,6 +1,6 @@
 #
 # Cookbook:: ossec
-# Recipe:: install_server
+# Recipe:: wazuh_api
 #
 # Copyright:: 2015-2017, Chef Software, Inc.
 #
@@ -17,8 +17,16 @@
 # limitations under the License.
 #
 
-include_recipe 'ossec::repository'
+apt_repository 'nodesource' do
+  uri 'https://deb.nodesource.com/node_6.x'
+  key 'https://deb.nodesource.com/gpgkey/nodesource.gpg.key'
+  distribution lazy { node['lsb']['codename'] }
+  components ['main']
+end
 
-package 'ossec' do
-  package_name node['ossec']['repo'] == 'wazuh' ? 'wazuh-manager' : 'ossec-hids-server'
+package ['nodejs', 'wazuh-api']
+
+service 'wazuh-api' do
+  supports status: true, restart: true
+  action [:enable, :start]
 end
