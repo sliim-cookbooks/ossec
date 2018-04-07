@@ -24,7 +24,10 @@ apt_repository 'nodesource' do
   components ['main']
 end
 
-package ['nodejs', 'wazuh-api']
+package 'nodejs'
+package 'wazuh-api' do
+  version node['ossec']['wazuh']['version']
+end
 
 service 'wazuh-api' do
   supports status: true, restart: true

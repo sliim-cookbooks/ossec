@@ -69,3 +69,6 @@ end
 # way. We leave this blank by default because Chef is better at
 # distributing agent configuration than OSSEC is.
 default['ossec']['agent_conf'] = []
+
+# Wazuh specific
+default['ossec']['wazuh']['version'] = '3.2.1-1'
