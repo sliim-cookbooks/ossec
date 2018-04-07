@@ -78,3 +78,6 @@ default['ossec']['local_rules'] = {}
 # Local decoders to deploy in etc/decoders/local_decoder.xml config file.
 # Only for server configuration, will be ignored if empty.
 default['ossec']['local_decoders'] = {}
+
+# Wazuh specific
+default['ossec']['wazuh']['version'] = '3.2.1-1'

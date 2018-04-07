@@ -21,4 +21,5 @@ include_recipe 'ossec::repository'
 
 package 'ossec' do
   package_name node['ossec']['repo'] == 'wazuh' ? 'wazuh-manager' : 'ossec-hids-server'
+  version node['ossec']['wazuh']['version'] if node['ossec']['repo'] == 'wazuh'
 end
