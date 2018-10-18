@@ -69,13 +69,3 @@ cron 'distribute-ossec-keys' do
   command '/usr/local/bin/dist-ossec-keys.sh'
   only_if { ::File.exist?("#{node['ossec']['dir']}/etc/client.keys") }
 end
-
-file "#{node['ossec']['dir']}/etc/decoders/local_decoder.xml" do
-  action :create
-  owner 'root'
-  owner 'ossec'
-  mode '0440'
-  notifies :restart, 'service[ossec]', :delayed
-  content Chef::OSSEC::Helpers.ossec_to_xml(node['ossec']['local_decoders'].to_hash)
-  not_if { node['ossec']['local_decoders'].empty? }
-end
