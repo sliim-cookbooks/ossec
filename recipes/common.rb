@@ -82,6 +82,12 @@ file "#{node['ossec']['dir']}/etc/shared/agent.conf" do
   }
 end
 
+directory "#{node['ossec']['dir']}/etc/decoders" do
+  owner 'root'
+  owner 'ossec'
+  mode '0750'
+end
+
 file "#{node['ossec']['dir']}/etc/decoders/local_decoder.xml" do
   action :create
   owner 'root'
