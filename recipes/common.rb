@@ -129,6 +129,7 @@ if node['ossec']['repo'] == 'wazuh'
   sname = node.recipe?('ossec::server') || node.recipe?('ossec::default') ? 'wazuh-manager' : 'wazuh-agent'
 else
   sname = platform_family?('debian') ? 'ossec' : 'ossec-hids'
+end
 
 # Both the RPM and DEB packages enable and start the service
 # immediately after installation, which isn't helpful. An empty
