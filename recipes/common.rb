@@ -109,11 +109,20 @@ file "#{node['ossec']['dir']}/etc/shared/agent.conf" do
   }
 end
 
+file "#{node['ossec']['dir']}/etc/decoders/local_decoder.xml" do
+  action :create
+  owner 'root'
+  owner 'ossec'
+  mode '0440'
+  notifies :restart, 'service[ossec]', :delayed
+  content Chef::OSSEC::Helpers.ossec_to_xml(node['ossec']['local_decoders'].to_hash)
+  not_if { node['ossec']['local_decoders'].empty? }
+end
+
 if node['ossec']['repo'] == 'wazuh'
   sname = node.recipe?('ossec::server') || node.recipe?('ossec::default') ? 'wazuh-manager' : 'wazuh-agent'
 else
   sname = platform_family?('debian') ? 'ossec' : 'ossec-hids'
-end
 
 # Both the RPM and DEB packages enable and start the service
 # immediately after installation, which isn't helpful. An empty
